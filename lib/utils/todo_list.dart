@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 class TodoList extends StatelessWidget {
   const TodoList({
@@ -19,17 +18,33 @@ class TodoList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-      child: Slidable(
-        endActionPane: ActionPane(
-          motion: StretchMotion(),
-          children: [
-            SlidableAction(
-              onPressed: deleteFunction,
-              icon: Icons.delete,
-              borderRadius: BorderRadius.circular(15),
-            ),
-          ],
+      child: Dismissible(
+        key: ValueKey(taskName),
+        direction:
+            DismissDirection.endToStart, // Hanya bisa swipe dari kanan ke kiri
+        background: Container(
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: const [
+              Padding(
+                padding: EdgeInsets.only(right: 20),
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
+        onDismissed: (direction) {
+          if (deleteFunction != null) {
+            deleteFunction!(context);
+          }
+        },
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -43,18 +58,19 @@ class TodoList extends StatelessWidget {
                 onChanged: onChanged,
                 checkColor: Colors.black,
                 activeColor: Colors.white,
-                side: BorderSide(color: Colors.white),
+                side: const BorderSide(color: Colors.white),
               ),
               Text(
                 taskName,
                 style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    decoration: (taskCompleted)
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none,
-                    decorationColor: Colors.white,
-                    decorationThickness: 2),
+                  color: Colors.white,
+                  fontSize: 18,
+                  decoration: (taskCompleted)
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                  decorationColor: Colors.white,
+                  decorationThickness: 2,
+                ),
               ),
             ],
           ),
